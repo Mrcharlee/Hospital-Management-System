@@ -1,4 +1,4 @@
-Api Tested with Postman
+Api Tested using Postman
 
 <img width="1920" height="1008" alt="Screenshot 2026-02-12 151850" src="https://github.com/user-attachments/assets/ba562c46-89c1-43ff-961e-4d28a92ce2df" />
 

@@ -1,6 +1,6 @@
 ﻿namespace Hospital_Management_System.Model
 {
-    public class Patient
+    public class Patient : Person
     {
         public Guid  Id { get; set; }
         public string Name { get; set; }

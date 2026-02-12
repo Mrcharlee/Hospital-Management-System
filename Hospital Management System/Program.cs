@@ -1,5 +1,6 @@
 
 using Hospital_Management_System.DbHospital;
+using Hospital_Management_System.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,9 @@ builder.Services.AddDbContext<AppDb>(options =>
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<IPatientService, PatientService>();
+
 
 var app = builder.Build();
 

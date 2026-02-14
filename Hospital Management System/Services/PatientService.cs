@@ -1,6 +1,7 @@
 ﻿using Hospital_Management_System.DbHospital;
 using Hospital_Management_System.Interfaces;
 using Hospital_Management_System.Model;
+using Microsoft.EntityFrameworkCore;
 
 
 public class PatientService : IPatientService
@@ -12,29 +13,29 @@ public class PatientService : IPatientService
         _context = context;
     }
 
-    public List<Patient> GetAll()
+    public async Task<List<Patient>> GetAllAsync()
     {
-        return _context.Patients.ToList();
+        return await _context.Patients.ToListAsync();
 
     }
-    public Patient GetById(Guid id)
+    public async Task <Patient> GetByIdAsync(Guid id)
     {
-        return _context.Patients.Find(id);
+        return await _context.Patients.FindAsync(id);
     }
 
-    public Patient Create(Patient patient)
+    public async Task <Patient> CreateAsync(Patient patient)
     {
         patient.Id = Guid.NewGuid();
 
-        _context.Patients.Add(patient);
-        _context.SaveChanges();
+       await _context.Patients.AddAsync(patient);
+       await _context.SaveChangesAsync();
         return patient;
 
     }
 
-    public Patient Update(Guid id, Patient updatedPatients)
+    public async Task <Patient?> UpdateAsync(Guid id, Patient updatedPatients)
     {
-        var existingPatient = _context.Patients.Find(id);
+        var existingPatient = await _context.Patients.FindAsync(id);
 
         if (existingPatient == null)
         {
@@ -46,13 +47,13 @@ public class PatientService : IPatientService
         existingPatient.Address = updatedPatients.Address;
         existingPatient.BloodGroup = updatedPatients.BloodGroup;
 
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return existingPatient;
     }
 
-    public bool Delete(Guid id)
+    public async Task <bool> DeleteAsync(Guid id)
     {
-        var patient = _context.Patients.Find(id);
+        var patient = await _context.Patients.FindAsync(id);
 
         if (patient == null)
         {
@@ -60,7 +61,7 @@ public class PatientService : IPatientService
         }
 
         _context.Patients.Remove(patient);
-        _context.SaveChanges();
+       await _context.SaveChangesAsync();
 
         return true;
     }

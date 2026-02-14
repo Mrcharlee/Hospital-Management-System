@@ -1,6 +1,8 @@
 using Hospital_Management_System.DbHospital;
+using Hospital_Management_System.Interfaces;
 using Hospital_Management_System.Model;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Hospital_Management_System.Controllers
 {
@@ -8,49 +10,56 @@ namespace Hospital_Management_System.Controllers
     [Route("api/[controller]")]
     public class AppointmentController : ControllerBase
     {
-        private readonly AppDb _context;
+        private readonly IAppointmentServices _service;
 
-        public AppointmentController(AppDb context)
+        public AppointmentController(IAppointmentServices service)
         {
-            _context = context;
+            _service = service;
         }
 
-       
-        [HttpPost("book")]
-        public IActionResult Book(Appointment appointment)
-        {
-            
-            appointment.Id = Guid.NewGuid();
-            
-            _context.Appointments.Add(appointment);
-            _context.SaveChanges();
 
-            
-            return Ok(appointment);
-        }
-       
         [HttpGet]
-        public IActionResult List()
+        public async Task<IActionResult>  GetAll()
         {
-            var activeAppointments = _context.Appointments
-                                             .Where(a => !a.IsCancelled)
-                                             .ToList();
-
-            return Ok(activeAppointments);
+            var appointments = await _service.GetAllAsync();
+            return Ok(appointments);
         }
-    
-        [HttpPut("cancel/{id}")]
-        public IActionResult Cancel(Guid id)
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
-           
-            var appointment = _context.Appointments.Find(id);
+
+            var appointment = await _service.GetByIdAsync(id);
 
             if (appointment == null)
-                return NotFound("Appointment not found");
+            
+                return NotFound("Appointment not found ");
 
-           
-            appointment.IsCancelled = true;
-            _context.SaveChanges();
+            return Ok(appointment);
+        }
+
+
+        [HttpPost("book")]
+        public async Task <IActionResult> Book(Appointment appointment)
+        {
+            if (appointment == null)
+                return BadRequest("Appointment data is required");
+
+            var boooked = await _service.BookAsync(appointment);
+
+            return Ok(boooked);
+        }
+       
+      
+    
+        [HttpPut("cancel/{id}")]
+        public async Task<IActionResult> Cancel(Guid id)
+        {
+
+            var sucess = await _service.Cancel(id);
+
+            if (!sucess)
+            return NotFound("Appointment not Found");
 
             return Ok("Appointment cancelled successfully");
         }

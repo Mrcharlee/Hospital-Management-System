@@ -10,43 +10,43 @@ public class PatientController : ControllerBase
 
     public PatientController(IPatientService service)
     {
-        _service = service;
+        _service = service; 
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task <IActionResult> GetAll()
     {
-        var patients = _service.GetAll();
+        var patients = await _service.GetAllAsync();
         return Ok(patients);
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetById(Guid id)
+    public async Task <IActionResult> GetById(Guid id)
     {
-        var patient = _service.GetById(id);
+        var patient = await _service.GetByIdAsync(id);
         if (patient == null) return NotFound();
         return Ok(patient);
     }
 
     [HttpPost]
-    public IActionResult Create(Patient patient)
+    public async Task <IActionResult> Create(Patient patient)
     {
-        var created = _service.Create(patient);
+        var created = await _service.CreateAsync(patient);
         return Ok(created);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(Guid id, Patient patient)
+    public async Task <IActionResult> Update(Guid id, Patient patient)
     {
-        var updated = _service.Update(id, patient);
+        var updated = await _service.UpdateAsync(id, patient);
         if (updated == null) return NotFound();
         return Ok(updated);
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(Guid id)
+    public async Task <IActionResult> Delete(Guid id)
     {
-        var success = _service.Delete(id);
+        var success = await _service.DeleteAsync(id);
         if (!success) return NotFound();
         return Ok();
     }

@@ -50,16 +50,14 @@ namespace Hospital_Management_System.Controllers
             return Ok(boooked);
         }
        
-      
     
         [HttpPut("cancel/{id}")]
         public async Task<IActionResult> Cancel(Guid id)
         {
-
             var sucess = await _service.Cancel(id);
 
             if (!sucess)
-            return NotFound("Appointment not Found");
+                return NotFound("Appointment not Found");
 
             return Ok("Appointment cancelled successfully");
         }

@@ -22,7 +22,7 @@ namespace Hospital_Management_System.Services
             return await _context.Appointments.Where(a => !a.IsCancelled).ToListAsync();
         }
 
-        public async Task <Appointment> GetByIdAsync(Guid id)
+        public async Task <Appointment?> GetByIdAsync(Guid id)
         {
             return await _context.Appointments.FindAsync(id);
         }

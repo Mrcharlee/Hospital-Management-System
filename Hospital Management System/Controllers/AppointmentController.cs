@@ -40,7 +40,7 @@ namespace Hospital_Management_System.Controllers
 
 
         [HttpPost("book")]
-        public async Task <IActionResult> Book(Appointment appointment)
+        public async Task <IActionResult> Book([FromBody]Appointment appointment)
         {
             if (appointment == null)
                 return BadRequest("Appointment data is required");

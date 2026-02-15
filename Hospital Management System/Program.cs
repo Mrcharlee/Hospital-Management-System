@@ -1,4 +1,4 @@
-using Hospital_Management_System.DbHospital;
+﻿using Hospital_Management_System.DbHospital;
 using Hospital_Management_System.Interfaces;
 using Hospital_Management_System.Services;
 using Microsoft.EntityFrameworkCore;
@@ -10,25 +10,42 @@ builder.Services.AddDbContext<AppDb>(options =>
 {
     options.UseSqlServer(connectionString);
 });
+
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+
+
+
+
 
 builder.Services.AddScoped<IAppointmentServices, AppointmentService>();
 builder.Services.AddScoped<IPatientService, PatientService>();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseHttpsRedirection();
+    app.UseSwagger();
+    app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        options.RoutePrefix = string.Empty;
+    });
 
-    app.UseAuthorization();
-
-    app.MapControllers();
 }
 
-app.Run();
+app.UseHttpsRedirection();
 
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();

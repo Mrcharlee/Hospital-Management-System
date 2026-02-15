@@ -7,10 +7,10 @@ namespace Hospital_Management_System.Interfaces
 {
     public interface IAppointmentServices
     {
-        Task<List<Appointment>> GetAllAsync();
-        Task<Appointment?> GetByIdAsync(Guid id);
-        Task<Appointment> BookAsync(Appointment appointment);
+       public Task<List<Appointment>> GetAllAsync();
+       public Task<Appointment?> GetByIdAsync(Guid id);
+       public Task<Appointment> BookAsync(Appointment appointment);
 
-        Task<bool> Cancel(Guid id);
+       public Task<bool> Cancel(Guid id);
     }
 }

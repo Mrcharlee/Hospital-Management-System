@@ -1,5 +1,6 @@
 ﻿using Hospital_Management_System.Interfaces;
 using Hospital_Management_System.Model;
+using Hospital_Management_System.DTO.Patient;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -27,25 +28,25 @@ public class PatientController : ControllerBase
     {
         var patient = await _service.GetByIdAsync(id);
         if (patient == null)
-            return NotFound("Patientnot found");
+            return NotFound("Patient not found");
 
         return Ok(patient);
     }
 
     [HttpPost]
-    public async Task <IActionResult> Create([FromBody] Patient patient)
+    public async Task <IActionResult> Create([FromBody] CreatePatientDto dto)
     {
-        if (patient ==null)
+        if (dto == null)
             return BadRequest("Patient data is required");
 
-        var created = await _service.CreateAsync(patient);
-        return Ok(created);
+        var patient = await _service.CreateAsync(dto);
+        return Ok(patient);
     }
 
     [HttpPut("{id}")]
-    public async Task <IActionResult> Update(Guid id, [FromBody] Patient patient)
+    public async Task <IActionResult> Update(Guid id, [FromBody] UpdatePatientDto dto)
     {
-        var updated = await _service.UpdateAsync(id, patient);
+        var updated = await _service.UpdateAsync(id, dto);
 
         if (updated == null) return NotFound();
         return Ok(updated);

@@ -2,7 +2,10 @@
 using Hospital_Management_System.Interfaces;
 using Hospital_Management_System.Model;
 using Microsoft.EntityFrameworkCore;
-
+using Hospital_Management_System.DTO.Patient;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class PatientService : IPatientService
 {
@@ -23,9 +26,16 @@ public class PatientService : IPatientService
         return await _context.Patients.FindAsync(id);
     }
 
-    public async Task <Patient> CreateAsync(Patient patient)
+    public async Task <Patient> CreateAsync(CreatePatientDto dto)
     {
-        patient.Id = Guid.NewGuid();
+        var patient = new Patient
+        {
+            Id = Guid.NewGuid(),
+            Name = dto.Name,
+            Age = dto.Age,
+            Address = dto.Address,
+            BloodGroup = dto.BloodGroup,
+        };
 
        await _context.Patients.AddAsync(patient);
        await _context.SaveChangesAsync();
@@ -33,7 +43,7 @@ public class PatientService : IPatientService
 
     }
 
-    public async Task <Patient?> UpdateAsync(Guid id, Patient updatedPatients)
+    public async Task <Patient?> UpdateAsync(Guid id, UpdatePatientDto dto)
     {
         var existingPatient = await _context.Patients.FindAsync(id);
 
@@ -42,11 +52,11 @@ public class PatientService : IPatientService
             return null;
         }
 
-        existingPatient.Name = updatedPatients.Name;
-        existingPatient.Age = updatedPatients.Age;
-        existingPatient.Address = updatedPatients.Address;
-        existingPatient.BloodGroup = updatedPatients.BloodGroup;
-
+        if (dto.Name != null) existingPatient.Name = dto.Name;
+        if (dto.Age != null) existingPatient.Age = dto.Age.Value;
+        if (dto.Address != null) existingPatient.Address = dto.Address;
+        if (dto.BloodGroup != null) existingPatient.BloodGroup = dto.BloodGroup;
+  
         await _context.SaveChangesAsync();
         return existingPatient;
     }
@@ -65,7 +75,5 @@ public class PatientService : IPatientService
 
         return true;
     }
-
-
 }
 

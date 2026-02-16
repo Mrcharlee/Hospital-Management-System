@@ -1,4 +1,5 @@
 using Hospital_Management_System.DbHospital;
+using Hospital_Management_System.DTO.Appointment;
 using Hospital_Management_System.Interfaces;
 using Hospital_Management_System.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -40,26 +41,41 @@ namespace Hospital_Management_System.Controllers
 
 
         [HttpPost("book")]
-        public async Task <IActionResult> Book([FromBody]Appointment appointment)
+        public async Task <IActionResult> Book([FromBody]AppointmentCreateDto dto)
         {
-            if (appointment == null)
+            if (dto == null)
                 return BadRequest("Appointment data is required");
 
-            var boooked = await _service.BookAsync(appointment);
+            var boooked = await _service.BookAsync(dto);
 
             return Ok(boooked);
         }
        
     
-        [HttpPut("cancel/{id}")]
-        public async Task<IActionResult> Cancel(Guid id)
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] AppointmentUpdateDto dto)
         {
-            var sucess = await _service.Cancel(id);
+            if (dto == null)
+                return BadRequest("Update is required");
 
-            if (!sucess)
+            var success = await _service.UpdateAsync(id, dto);
+
+            if (!success)
                 return NotFound("Appointment not Found");
 
+
             return Ok("Appointment cancelled successfully");
+        }
+
+        [HttpDelete("cancel/{id}")]
+        public async Task<IActionResult> Cancel(Guid id)
+        {
+            var success =  await _service.Cancel(id);
+
+            if (!success)
+                return NotFound("Appointment Not Found");
+
+            return Ok("Appointment Cancelled Succcessfully");
         }
     }
 }

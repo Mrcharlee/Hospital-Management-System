@@ -1,4 +1,5 @@
-﻿using Hospital_Management_System.Model;
+﻿using Hospital_Management_System.DTO.Patient;
+using Hospital_Management_System.Model;
 
 namespace Hospital_Management_System.Interfaces
 {
@@ -6,11 +7,9 @@ namespace Hospital_Management_System.Interfaces
     {
        Task <List<Patient>> GetAllAsync();
        Task <Patient> GetByIdAsync(Guid id);
-       Task <Patient> CreateAsync(Patient patient);
-       Task <Patient> UpdateAsync(Guid id, Patient patient);
+       Task <Patient> CreateAsync(CreatePatientDto dto);
+       Task <Patient> UpdateAsync(Guid id, UpdatePatientDto dto);
        Task <bool> DeleteAsync(Guid id);
-
-
-
+       
     }
 }

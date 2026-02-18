@@ -1,0 +1,23 @@
+<div class="container mt-4">
+  <h3>Patients</h3>
+
+  <table class="table table-bordered table-striped mt-3">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Address</th>
+        <th>Blood Group</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let p of patients">
+        <td>{{ p.name }}</td>
+        <td>{{ p.age }}</td>
+        <td>{{ p.address }}</td>
+        <td>{{ p.bloodGroup }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

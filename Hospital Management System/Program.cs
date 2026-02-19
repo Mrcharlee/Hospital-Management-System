@@ -1,4 +1,6 @@
-﻿using Hospital_Management_System.DbHospital;
+﻿using Hospital_Management_System.Backend.Interfaces;
+using Hospital_Management_System.Backend.Services;
+using Hospital_Management_System.DbHospital;
 using Hospital_Management_System.Interfaces;
 using Hospital_Management_System.Services;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +17,10 @@ builder.Services.AddDbContext<AppDb>(options =>
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
+builder.Services.AddControllers();
 
 
-
+builder.Services.AddScoped<IStaffService, StaffService>();
 
 
 builder.Services.AddScoped<IAppointmentServices, AppointmentService>();

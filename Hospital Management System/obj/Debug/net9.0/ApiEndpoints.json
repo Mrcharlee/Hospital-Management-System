@@ -156,5 +156,52 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "StaffController",
+    "Method": "GetAllStaff",
+    "RelativePath": "api/staff",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "StaffController",
+    "Method": "CreateStaff",
+    "RelativePath": "api/staff",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Hospital_Management_System.Backend.DTO.Doctor.CreateStaffDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "StaffController",
+    "Method": "SetAdmin",
+    "RelativePath": "api/staff/{id}/admin",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "isAdmin",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

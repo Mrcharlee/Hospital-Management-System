@@ -11,7 +11,7 @@ import { AppointmentService } from '../../../core/services/appointment.service';
   templateUrl: './appointment-form.component.html',
 })
 export class AppointmentFormComponent implements OnInit {
-  @Input() appointment?: Appointment;
+  @Input() appointment?: Appointment | null;
   @Output() saved = new EventEmitter<void>();
 
   form: FormGroup;
@@ -35,18 +35,12 @@ export class AppointmentFormComponent implements OnInit {
   submit(): void {
     if (this.form.invalid) return;
 
-    const payload: Appointment = {
-      patientId: this.form.value.patientId,
-      appointmentDate: this.form.value.appointmentDate,
-      isCancelled: this.appointment?.isCancelled ?? false
-    };
+    const value = this.form.value;
 
     if (this.appointment?.id) {
-      this.svc.update(this.appointment.id, payload)
-        .subscribe(() => this.saved.emit());
+      this.svc.update(this.appointment.id, value).subscribe(() => this.saved.emit());
     } else {
-      this.svc.book(payload)
-        .subscribe(() => this.saved.emit());
+      this.svc.book(value).subscribe(() => this.saved.emit());
     }
   }
 

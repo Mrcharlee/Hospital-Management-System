@@ -1,0 +1,14 @@
+.view-container {
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  max-width: 450px;
+  background: #f0f0f0;
+  margin-top: 1rem;
+}
+
+.view-row {
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}

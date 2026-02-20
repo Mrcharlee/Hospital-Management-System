@@ -31,10 +31,13 @@ public class PatientService : IPatientService
         var patient = new Patient
         {
             Id = Guid.NewGuid(),
-            Name = dto.Name,
-            Age = dto.Age,
+            FullName = dto.FullName,
+            DateOfBirth = dto.DateOfBirth,
+            Gender = dto.Gender,
+            Phone = dto.Phone,
             Address = dto.Address,
-            BloodGroup = dto.BloodGroup,
+            BloodGroup = dto.BloodGroup
+
         };
 
        await _context.Patients.AddAsync(patient);
@@ -52,8 +55,10 @@ public class PatientService : IPatientService
             return null;
         }
 
-        if (dto.Name != null) existingPatient.Name = dto.Name;
-        if (dto.Age != null) existingPatient.Age = dto.Age.Value;
+        if (dto.FullName != null) existingPatient.FullName = dto.FullName;
+        if (dto.DateOfBirth != null) existingPatient.DateOfBirth = dto.DateOfBirth.Value;
+        if (dto.Gender != null) existingPatient.Gender = dto.Gender;
+        if (dto.Phone != null) existingPatient.Phone = dto.Phone;
         if (dto.Address != null) existingPatient.Address = dto.Address;
         if (dto.BloodGroup != null) existingPatient.BloodGroup = dto.BloodGroup;
   

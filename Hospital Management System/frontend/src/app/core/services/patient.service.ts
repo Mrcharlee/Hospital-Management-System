@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Patient } from '../../features/patient/patient.model';
-import { environment} from '../../environment/environment';
+import { Patient } from '../models/patient.model';
+import { environment } from '../../environment/environment';
 
-@Injectable({
-  providedIn: 'root',
-})
+
+@Injectable({ providedIn: 'root' })
 export class PatientService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = `${environment.apiUrl}/patient`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAll(): Observable<Patient[]> {
     return this.http.get<Patient[]>(this.apiUrl);
@@ -20,12 +19,12 @@ export class PatientService {
     return this.http.get<Patient>(`${this.apiUrl}/${id}`);
   }
 
-  create(patient: Patient): Observable<Patient> {
+  add(patient: Patient): Observable<Patient> {
     return this.http.post<Patient>(this.apiUrl, patient);
   }
 
-  update(id: string, patient: Patient): Observable<Patient> {
-    return this.http.put<Patient>(`${this.apiUrl}/${id}`, patient);
+  update(id: string, payload: Patient): Observable<Patient> {
+    return this.http.put<Patient>(`${this.apiUrl}/${id}`, payload);
   }
 
   delete(id: string): Observable<void> {

@@ -372,13 +372,21 @@
       "CreatePatientDto": {
         "type": "object",
         "properties": {
-          "name": {
+          "fullName": {
             "type": "string",
             "nullable": true
           },
-          "age": {
-            "type": "integer",
-            "format": "int32"
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
           },
           "address": {
             "type": "string",
@@ -431,13 +439,21 @@
       "UpdatePatientDto": {
         "type": "object",
         "properties": {
-          "name": {
+          "fullName": {
             "type": "string",
             "nullable": true
           },
-          "age": {
-            "type": "integer",
-            "format": "int32",
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
             "nullable": true
           },
           "address": {

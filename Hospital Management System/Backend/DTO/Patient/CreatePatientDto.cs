@@ -1,11 +1,13 @@
 ﻿namespace Hospital_Management_System.DTO.Patient
 {
-    public class CreatePatientDto 
+    public class CreatePatientDto
     {
-        public string Name { get; set; }
-        public int Age { get; set; }
-        public string Address { get; set; }
-        public string BloodGroup { get; set; }
-
+        public string FullName { get; set; } = null!;
+        public DateTime DateOfBirth { get; set; }
+        public string Gender { get; set; } = null!;
+        public string Phone { get; set; } = null!;
+        public string Address { get; set; } = null!;
+        public string BloodGroup { get; set; } = null!;
     }
+
 }

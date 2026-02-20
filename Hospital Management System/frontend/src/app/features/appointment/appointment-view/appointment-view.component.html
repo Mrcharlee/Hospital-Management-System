@@ -1,0 +1,9 @@
+<div class="appointment-view p-3 border rounded">
+  <h5>Appointment Details</h5>
+  <p><strong>ID:</strong> {{ appointment.id }}</p>
+  <p><strong>Patient ID:</strong> {{ appointment.patientId }}</p>
+  <p><strong>Date/Time:</strong> {{ appointment.appointmentDate | date:'medium' }}</p>
+  <p><strong>Cancelled:</strong> {{ appointment.isCancelled ? 'Yes' : 'No' }}</p>
+
+  <button class="btn btn-secondary mt-2" (click)="close()">Close</button>
+</div>

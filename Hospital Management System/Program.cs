@@ -30,6 +30,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+builder.Services.AddCors(options => {
+options.AddPolicy("AllowLocalhostAllPorts", policy => { // Allow any origin where the host is "localhost"
+               policy.SetIsOriginAllowed(origin =>
+               { if (Uri.TryCreate(origin, UriKind.Absolute, out var uri)) {
+                       return uri.Host == "localhost" || uri.Host == "127.0.0.1"; } 
+                   return false;
+               }) .AllowAnyHeader()
+               .AllowAnyMethod();
+     });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,6 +59,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors("AllowLocalhostAllPorts");
+
 
 app.MapControllers();
 

@@ -41,8 +41,6 @@ namespace Hospital_Management_System.Backend.Services
                 Id = Guid.NewGuid(),
                 FullName = dto.FullName,
                 Phone = dto.Phone,
-                Address = dto.Address,
-                Role = dto.Role,
                 IsAdmin = dto.IsAdmin
             };
 

@@ -1,0 +1,13 @@
+<div class="view-container" *ngIf="patient">
+  <h4>Patient Details</h4>
+
+  <div class="view-row"><strong>ID:</strong> {{ patient.id }}</div>
+  <div class="view-row"><strong>Full Name:</strong> {{ patient.fullName }}</div>
+  <div class="view-row"><strong>Date of Birth:</strong> {{ patient.dateOfBirth }}</div>
+  <div class="view-row"><strong>Gender:</strong> {{ patient.gender }}</div>
+  <div class="view-row"><strong>Phone:</strong> {{ patient.phone }}</div>
+  <div class="view-row"><strong>Address:</strong> {{ patient.address }}</div>
+  <div class="view-row"><strong>Blood Group:</strong> {{ patient.bloodGroup }}</div>
+
+  <button class="btn btn-secondary mt-2" (click)="close()">Close</button>
+</div>

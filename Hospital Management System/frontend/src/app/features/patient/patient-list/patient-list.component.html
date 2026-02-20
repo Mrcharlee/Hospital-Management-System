@@ -1,23 +1,32 @@
-<div class="container mt-4">
-  <h3>Patients</h3>
+<div class="patient-container">
+  <button class="btn btn-primary mb-2" (click)="openAdd()">Add Patient</button>
 
-  <table class="table table-bordered table-striped mt-3">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Age</th>
-        <th>Address</th>
-        <th>Blood Group</th>
-      </tr>
-    </thead>
+  <ag-grid-angular 
+    [rowData]="rowData"
+    [columnDefs]="columnDefs"
+    [pagination]="true"
+    rowSelection="single"
+    class="ag-theme-alpine"
+    style="width: 100%; height: 400px;"
+    (gridReady)="onGridReady($event)">
+  </ag-grid-angular>
 
-    <tbody>
-      <tr *ngFor="let p of patients">
-        <td>{{ p.name }}</td>
-        <td>{{ p.age }}</td>
-        <td>{{ p.address }}</td>
-        <td>{{ p.bloodGroup }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <app-patient-form
+    *ngIf="showForm"
+    [patient]="selected"
+    (saved)="onSaved()">
+  </app-patient-form>
+
+  <app-patient-view
+    *ngIf="showView"
+    [patient]="selected!"
+    (closed)="showView = false">
+  </app-patient-view>
+
+  <!-- Inline delete confirmation (NO modal component) -->
+  <div *ngIf="deleteId" class="confirm-inline mt-2">
+    <p>Are you sure you want to delete this patient?</p>
+    <button class="btn btn-danger" (click)="confirmDelete()">Yes</button>
+    <button class="btn btn-secondary ms-2" (click)="deleteId = null">No</button>
+  </div>
 </div>

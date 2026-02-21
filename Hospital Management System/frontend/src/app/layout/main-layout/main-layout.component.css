@@ -1,0 +1,16 @@
+/* Main layout container */
+.layout-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f6f9; /* soft background */
+}
+
+/* Main content wrapper */
+.main-content {
+  flex: 1; /* takes remaining width next to sidebar */
+  padding: 30px;
+  margin-left: 220px; /* match sidebar width */
+  background-color: #f4f6f9;
+  box-sizing: border-box;
+  min-height: 100vh;
+}

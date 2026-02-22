@@ -13,3 +13,16 @@
   width: 380px;
   border-radius: 8px;
 }
+
+.cancel-button {
+  background-color: #007bff; /* Blue background */
+  color: #fff;              /* White text */
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}

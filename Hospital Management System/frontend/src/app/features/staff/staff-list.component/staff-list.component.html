@@ -1,1 +1,29 @@
-<p>staff-list.component works!</p>
+<div>
+  <button (click)="addStaff()">Add Staff</button>
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Phone</th>
+        <th>Role</th>
+        <th>Admin</th>
+        <th>Address</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let staff of staffList">
+        <td>{{ staff.fullName }}</td>
+        <td>{{ staff.phone }}</td>
+        <td>{{ staff.role }}</td>
+        <td>{{ staff.isAdmin ? 'Yes' : 'No' }}</td>
+        <td>{{ staff.address }}</td>
+        <td>
+          <button (click)="viewStaff(staff.id)">View</button>
+          <button (click)="editStaff(staff.id)">Edit</button>
+          <button (click)="deleteStaff(staff.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

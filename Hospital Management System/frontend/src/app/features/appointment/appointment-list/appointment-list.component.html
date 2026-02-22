@@ -1,8 +1,8 @@
-<div class="appointment-container">
-  <!-- Add New Appointment Button -->
+\<div class="appointment-container">
+  
   <button class="btn btn-primary mb-2" (click)="openAdd()">New Appointment</button>
 
-  <!-- AG Grid Table -->
+  
   <ag-grid-angular
     class="ag-theme-alpine"
     style="width: 100%; height: 400px;"
@@ -13,27 +13,27 @@
     (gridReady)="onGridReady($event)">
   </ag-grid-angular>
 
-  <!-- Appointment Form: Add -->
+
   <app-appointment-form
     *ngIf="showForm && !selected"
     (saved)="onSaved()">
   </app-appointment-form>
 
-  <!-- Appointment Form: Edit -->
+  
   <app-appointment-form
     *ngIf="showForm && selected"
     [appointment]="selected"
     (saved)="onSaved()">
   </app-appointment-form>
 
-  <!-- Appointment View -->
+  
   <app-appointment-view
     *ngIf="showView && selected"
     [appointment]="selected"
     (closed)="showView = false">
   </app-appointment-view>
 
-  <!-- Confirm Delete Inline -->
+  
   <div *ngIf="deleteId" class="confirm-inline mt-2">
     <p>Cancel this appointment?</p>
     <button class="btn btn-danger" (click)="confirmDelete()">Yes</button>

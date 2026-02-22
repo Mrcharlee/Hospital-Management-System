@@ -6,4 +6,5 @@ export interface Patient {
     bloodGroup: string;
     gender?: string;
     phone?: string; 
+    
 }

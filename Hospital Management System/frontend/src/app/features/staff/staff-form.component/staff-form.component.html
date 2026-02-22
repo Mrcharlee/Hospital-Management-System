@@ -1,1 +1,28 @@
-<p>staff-form.component works!</p>
+<div>
+  <h2>{{ isEdit ? 'Edit Staff' : 'Add Staff' }}</h2>
+  <form [formGroup]="staffForm" (ngSubmit)="save()">
+    <div>
+      <label>Full Name</label>
+      <input formControlName="fullName" />
+    </div>
+    <div>
+      <label>Phone</label>
+      <input formControlName="phone" />
+    </div>
+    <div>
+      <label>Role</label>
+      <input formControlName="role" />
+    </div>
+    <div>
+      <label>Admin</label>
+      <input type="checkbox" formControlName="isAdmin" />
+    </div>
+    <div>
+      <label>Address</label>
+      <input formControlName="address" />
+    </div>
+
+    <button type="submit">{{ isEdit ? 'Update' : 'Create' }}</button>
+    <button type="button" routerLink="/staff">Cancel</button>
+  </form>
+</div>

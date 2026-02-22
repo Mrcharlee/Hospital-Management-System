@@ -3,4 +3,5 @@ export interface Appointment {
   patientId: string;
   appointmentDate: string; 
   isCancelled?: boolean;
+
 }

@@ -15,36 +15,39 @@ import { AppointmentViewComponent } from '../appointment-view/appointment-view.c
   styleUrls: ['./appointment-list.component.css']
 })
 export class AppointmentListComponent implements OnInit {
+
   rowData: Appointment[] = [];
   selected?: Appointment;
   showForm = false;
   showView = false;
-  deleteId: string | null = null;
+  deleteId: string | null | undefined = null; // TS-safe
 
   columnDefs: ColDef<Appointment>[] = [
     { field: 'id', headerName: 'ID', width: 100 },
     { field: 'patientId', headerName: 'Patient ID', flex: 1 },
-    { 
-      field: 'appointmentDate', 
-      headerName: 'Date/Time', 
+    {
+      field: 'appointmentDate',
+      headerName: 'Date/Time',
       flex: 1,
       valueFormatter: (params: ValueFormatterParams<Appointment>) =>
         params.value ? new Date(params.value).toLocaleString() : ''
     },
-    { 
-      field: 'isCancelled', 
-      headerName: 'Cancelled', 
-      width: 120, 
-      valueFormatter: (params: ValueFormatterParams<Appointment>) =>
-        params.value ? 'Yes' : 'No'
+    {
+      headerName: 'Cancelled',
+      width: 120,
+      cellRenderer: (params: ICellRendererParams<Appointment>) => {
+        const appt = params.data!;
+        const color = appt.isCancelled ? 'black' : 'white';
+        return `<div class="cancel-circle" style="background-color: ${color}"></div>`;
+      }
     },
     {
       headerName: 'Actions',
       width: 260,
       cellRenderer: (params: ICellRendererParams<Appointment>) => `
-        <button class="btn btn-info view-btn" data-id="${params.data?.id}">View</button>
-        <button class="btn btn-warning edit-btn ms-1" data-id="${params.data?.id}">Edit</button>
-        <button class="btn btn-danger delete-btn ms-1" data-id="${params.data?.id}">Cancel</button>
+        <button class="btn btn-info view-btn">View</button>
+        <button class="btn btn-warning edit-btn ms-1">Edit</button>
+        <button class="btn btn-danger delete-btn ms-1">Delete</button>
       `
     }
   ];
@@ -54,10 +57,7 @@ export class AppointmentListComponent implements OnInit {
   ngOnInit(): void { this.load(); }
 
   load(): void {
-    this.svc.getAll().subscribe({
-      next: data => this.rowData = data,
-      error: err => console.error('Failed to load appointments', err)
-    });
+    this.svc.getAll().subscribe(data => this.rowData = data);
   }
 
   onGridReady(ev: any): void {
@@ -65,10 +65,26 @@ export class AppointmentListComponent implements OnInit {
       const target = e.event?.target as HTMLElement;
       if (!target || !e.data) return;
 
-      const id = e.data.id;
-      if (target.classList.contains('view-btn')) this.openView(e.data);
-      else if (target.classList.contains('edit-btn')) this.openEdit(e.data);
+      const appt = e.data as Appointment;
+      const id = appt.id ?? null;
+
+      if (target.classList.contains('view-btn')) this.openView(appt);
+      else if (target.classList.contains('edit-btn')) this.openEdit(appt);
       else if (target.classList.contains('delete-btn')) this.deleteId = id;
+      else if (target.classList.contains('cancel-circle')) {
+        if (appt.isCancelled) return; // already cancelled
+
+        const ok = confirm('Do you want to cancel this appointment?');
+        if (!ok) return;
+
+        this.svc.cancel(id!).subscribe(() => {
+          const idx = this.rowData.findIndex(a => a.id === id);
+          if (idx > -1) {
+            this.rowData[idx].isCancelled = true;
+            this.rowData = [...this.rowData]; // refresh grid
+          }
+        });
+      }
     });
   }
 
@@ -78,14 +94,15 @@ export class AppointmentListComponent implements OnInit {
 
   confirmDelete(): void {
     if (!this.deleteId) return;
-    this.svc.cancel(this.deleteId).subscribe({
-      next: () => { this.deleteId = null; this.load(); },
-      error: err => console.error('Cancel failed', err)
+
+    const id = this.deleteId;
+    this.svc.cancel(id).subscribe(() => {
+      const idx = this.rowData.findIndex(a => a.id === id);
+      if (idx > -1) this.rowData[idx].isCancelled = true;
+      this.deleteId = null;
+      this.rowData = [...this.rowData];
     });
   }
 
-  onSaved(): void {
-    this.showForm = false;
-    this.load();
-  }
+  onSaved(): void { this.showForm = false; this.load(); }
 }

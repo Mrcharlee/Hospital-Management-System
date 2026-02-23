@@ -1,4 +1,4 @@
-<div *ngIf="staff">
+<div class="staff-view-container" *ngIf="staff">
   <h2>Staff Details</h2>
   <p><strong>Full Name:</strong> {{ staff.fullName }}</p>
   <p><strong>Phone:</strong> {{ staff.phone }}</p>
@@ -6,5 +6,5 @@
   <p><strong>Admin:</strong> {{ staff.isAdmin ? 'Yes' : 'No' }}</p>
   <p><strong>Address:</strong> {{ staff.address }}</p>
 
-  <button (click)="back()">Back</button>
+  <button (click)="back()">Back to List</button>
 </div>

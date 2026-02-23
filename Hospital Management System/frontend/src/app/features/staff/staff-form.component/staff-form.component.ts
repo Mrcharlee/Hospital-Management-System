@@ -1,22 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { StaffService } from '../../../core/services/staff.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Staff } from '../../../core/models/staff.model';
-
+import { StaffService } from '../../../core/services/staff.service';
 
 @Component({
-  selector: 'app-staff-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  selector: 'app-staff-form',
   templateUrl: './staff-form.component.html',
+  styleUrls: ['./staff-form.component.css'],
 })
 export class StaffFormComponent implements OnInit {
   staffForm!: FormGroup;
-
-  id!: string;
-  isEdit = false;
+  staffId: string | null = null;
+  isEditMode = false;
 
   constructor(
     private fb: FormBuilder,
@@ -26,8 +26,8 @@ export class StaffFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.id = this.route.snapshot.params['id'];
-    this.isEdit = !!this.id;
+    this.staffId = this.route.snapshot.paramMap.get('id');
+    this.isEditMode = !!this.staffId;
 
     this.staffForm = this.fb.group({
       fullName: ['', Validators.required],
@@ -37,21 +37,35 @@ export class StaffFormComponent implements OnInit {
       address: ['', Validators.required],
     });
 
-    if (this.isEdit) {
-      this.staffService.getById(this.id).subscribe((data) => {
-        this.staffForm.patchValue(data);
+    if (this.isEditMode) this.loadStaff();
+  }
+
+  loadStaff() {
+    this.staffService.getById(this.staffId!).subscribe({
+      next: (data: Staff) => this.staffForm.patchValue(data),
+      error: err => console.error('Failed to load staff', err),
+    });
+  }
+
+  submitForm() {
+    if (this.staffForm.invalid) return;
+
+    const payload = this.staffForm.value;
+
+    if (this.isEditMode) {
+      this.staffService.update(this.staffId!, payload).subscribe({
+        next: () => this.router.navigate(['/staff']),
+        error: err => console.error('Failed to update staff', err),
+      });
+    } else {
+      this.staffService.add(payload).subscribe({
+        next: () => this.router.navigate(['/staff']),
+        error: err => console.error('Failed to add staff', err),
       });
     }
   }
 
-  save(): void {
-    if (this.staffForm.invalid) return;
-
-    const staffData = this.staffForm.value;
-    if (this.isEdit) {
-      this.staffService.update(this.id, staffData).subscribe(() => this.router.navigate(['/staff']));
-    } else {
-      this.staffService.add(staffData).subscribe(() => this.router.navigate(['/staff']));
-    }
+  cancel() {
+    this.router.navigate(['/staff']);
   }
 }

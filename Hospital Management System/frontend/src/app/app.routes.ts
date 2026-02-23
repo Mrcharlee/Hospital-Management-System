@@ -3,13 +3,20 @@ import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
+// Patients
 import { PatientListComponent } from './features/patient/patient-list/patient-list.component';
 import { PatientFormComponent } from './features/patient/patient-form/patient-form.component';
 import { PatientViewComponent } from './features/patient/patient-view/patient-view.component';
 
+// Appointments
 import { AppointmentListComponent } from './features/appointment/appointment-list/appointment-list.component';
 import { AppointmentFormComponent } from './features/appointment/appointment-form/appointment-form.component';
 import { AppointmentViewComponent } from './features/appointment/appointment-view/appointment-view.component';
+
+// Staff
+import { StaffListComponent } from './features/staff/staff-list.component/staff-list.component';
+import { StaffFormComponent } from './features/staff/staff-form.component/staff-form.component';
+import { StaffViewComponent } from './features/staff/staff-view.component/staff-view.component';
 
 export const routes: Routes = [
   {
@@ -33,40 +40,13 @@ export const routes: Routes = [
       { path: 'appointments/:id/edit', component: AppointmentFormComponent },
       { path: 'appointments/:id/view', component: AppointmentViewComponent },
 
-      // Staff (standalone components)
-      {
-        path: 'staff',
-        children: [
-          {
-            path: '',
-            loadComponent: () =>
-              import('./features/staff/staff-list.component/staff-list.component').then(
-                (m) => m.StaffListComponent
-              ),
-          },
-          {
-            path: 'add',
-            loadComponent: () =>
-              import('./features/staff/staff-form.component/staff-form.component').then(
-                (m) => m.StaffFormComponent
-              ),
-          },
-          {
-            path: 'edit/:id',
-            loadComponent: () =>
-              import('./features/staff/staff-form.component/staff-form.component').then(
-                (m) => m.StaffFormComponent
-              ),
-          },
-          {
-            path: 'view/:id',
-            loadComponent: () =>
-              import('./features/staff/staff-view.component/staff-view.component').then(
-                (m) => m.StaffViewComponent
-              ),
-          },
-        ],
-      },
+      // Staff
+      { path: 'staff', component: StaffListComponent },
+      { path: 'staff/add', component: StaffFormComponent },
+      { path: 'staff/:id/edit', component: StaffFormComponent },
+      { path: 'staff/:id/view', component: StaffViewComponent },
+      { path: '', redirectTo: '/staff', pathMatch: 'full' },
+      { path: '**', redirectTo: '/staff' },
     ],
   },
 ];

@@ -1,31 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import { StaffService } from '../../../core/services/staff.service';
-import { Staff } from '../../../core/models/staff.model';
-import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Staff } from '../../../core/models/staff.model';
+import { StaffService } from '../../../core/services/staff.service';
+
 
 @Component({
-  selector: 'app-staff-view',
   standalone: true,
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule, RouterModule],
+  selector: 'app-staff-view',
   templateUrl: './staff-view.component.html',
+  styleUrls: ['./staff-view.component.css'],
 })
 export class StaffViewComponent implements OnInit {
   staff!: Staff;
 
   constructor(
-    private staffService: StaffService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private staffService: StaffService
   ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.params['id'];
-    this.staffService.getById(id).subscribe((data) => (this.staff = data));
+    const staffId = this.route.snapshot.paramMap.get('id');
+    if (staffId) {
+      this.staffService.getById(staffId).subscribe({
+        next: data => this.staff = data,
+        error: err => console.error('Failed to load staff', err),
+      });
+    }
   }
 
-  back(): void {
+  back() {
     this.router.navigate(['/staff']);
   }
 }

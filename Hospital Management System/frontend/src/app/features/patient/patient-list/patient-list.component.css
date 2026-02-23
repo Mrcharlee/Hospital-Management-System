@@ -1,2 +1,41 @@
 .patient-container { padding: 1rem; }
 button { margin-bottom: 0.5rem; }
+
+
+/* Container padding */
+.patient-container { padding: 1rem; }
+
+/* Spacing between buttons */
+button { margin-bottom: 0.5rem; }
+
+/* --- Button Colors --- */
+/* Add buttons (Add Patient, Add Appointment) */
+.button-add {
+    background-color: #28a745; /* Green */
+    color: #fff;
+}
+.button-add:hover { background-color: #218838; }
+
+/* View buttons */
+.button-view {
+    background-color: #0d6efd; /* Bootstrap blue-ish */
+    color: #fff;
+}
+.button-view:hover { background-color: #0b5ed7; }
+
+/* Edit buttons */
+.button-edit {
+    background-color: #ffc107; /* Yellow/Orange */
+    color: #212529; /* dark text */
+}
+.button-edit:hover { background-color: #e0a800; }
+
+/* Delete buttons */
+.button-delete {
+    background-color: #dc3545; /* Red */
+    color: #fff;
+}
+.button-delete:hover { background-color: #c82333; }
+
+/* Optional: small buttons in AG Grid */
+button.btn-sm { padding: 3px 8px; font-size: 13px; }

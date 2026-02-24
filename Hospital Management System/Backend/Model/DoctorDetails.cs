@@ -10,6 +10,6 @@ namespace Hospital_Management_System.Backend.Model
         public string Specialization { get; set; } = null!;
 
         public Staff Staff { get; set; } = null!;
-        public string Address { get; internal set; }
+        public string Address { get; set; } = null!;
     }
 }

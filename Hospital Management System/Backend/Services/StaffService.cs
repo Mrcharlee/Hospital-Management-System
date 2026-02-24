@@ -28,6 +28,7 @@ namespace Hospital_Management_System.Backend.Services
                     FullName = s.FullName,
                     Phone = s.Phone,
                     Role = s.Role,
+                    Address = s.Address,
                     IsAdmin = s.IsAdmin,
                     Specialization = s.DoctorDetails != null ? s.DoctorDetails.Specialization : null
 

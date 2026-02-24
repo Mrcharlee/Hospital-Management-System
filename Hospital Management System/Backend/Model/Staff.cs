@@ -6,7 +6,7 @@ namespace Hospital_Management_System.Model
     {
        public StaffRole Role { get; set; }
         public bool IsAdmin { get; set; }
-        public string Address { get; set; } = null!;
+        public string Address { get; set; }
         public DoctorDetails DoctorDetails { get; set; }
     }
 }

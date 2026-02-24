@@ -1,77 +1,29 @@
-/* appointment-list.component.css */
-
-.appointment-container {
-    padding: 1rem;
-    background-color: #fff;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+/* Make the Active / Cancelled button small like View/Edit/Delete */
+.cancel-btn {
+  font-size: 0.75rem;      /* smaller text */
+  padding: 0.25rem 0.5rem; /* smaller height and width */
+  border-radius: 0.25rem;  /* rounded corners like Bootstrap btn-sm */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease; /* smooth hover transition */
 }
 
-/* Button spacing */
-.appointment-container .btn {
-        margin-right: 0.5rem;
+/* Blue = Cancelled, Black = Active */
+.cancel-btn.blue {
+  background-color: #0d6efd; /* Bootstrap info blue */
+  color: white;
 }
 
-/* AG Grid table styling */
-.ag-theme-alpine {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 1rem;
+.cancel-btn.black {
+  background-color: #212529; /* Bootstrap dark */
+  color: white;
 }
 
-/* Inline confirmation box */
-.confirm-inline {
-    padding: 0.75rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-}
-.confirm-inline p {
-    margin: 0 0 0.5rem 0;
+/* Hover effect: slightly lighter */
+.cancel-btn.blue:hover {
+  background-color: #0b5ed7;
 }
 
-
-
-.btn-add {
-    margin-bottom: 10px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn-add:hover {
-    background-color: #45a049;
-}
-
-bt.btn-view {
-    background-color: #2196f3;
-    color: white;
-    border: none;
-    padding: 4px 8px;
-    margin-right: 5px;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.btn.btn-edit {
-    background-color: #ffc107;
-    color: black;
-    border: none;
-    padding: 4px 8px;
-    margin-right: 5px;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.btn.btn-delete {
-    background-color: #f44336;
-    color: white;
-    border: none;
-    padding: 4px 8px;
-    border-radius: 3px;
-    cursor: pointer;
+.cancel-btn.black:hover {
+  background-color: #343a40;
 }

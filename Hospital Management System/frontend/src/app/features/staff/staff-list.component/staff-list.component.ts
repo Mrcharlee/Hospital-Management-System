@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { ColDef, CellClickedEvent } from 'ag-grid-community';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { Staff } from '../../../core/models/staff.model';
 import { StaffService } from '../../../core/services/staff.service';
@@ -22,30 +21,37 @@ import { StaffService } from '../../../core/services/staff.service';
   styleUrls: ['./staff-list.component.css']
 })
 export class StaffListComponent implements OnInit {
-  staffList: Staff[] = [];
 
-  columnDefs: ColDef[] = [
+  rowData: Staff[] = [];
+  selected?: Staff;
+
+  showView = false;
+  showForm = false;
+  showDeleteModal = false;
+  deleteId: string | null = null;
+
+  columnDefs: ColDef<Staff>[] = [
     { field: 'fullName', headerName: 'Full Name', flex: 1 },
     { field: 'phone', headerName: 'Phone', flex: 1 },
     { field: 'role', headerName: 'Role', flex: 1 },
-    { field: 'isAdmin', headerName: 'Admin', flex: 1,
+    { 
+      field: 'isAdmin', headerName: 'Admin', flex: 1,
       valueFormatter: params => params.value ? 'Yes' : 'No'
     },
-    { field: 'address', headerName: 'Address', flex: 2,
-      valueGetter: params => params.data.address ?? params.data.doctorDetails?.address ?? ''
+    { 
+      field: 'address', headerName: 'Address', flex: 2,
+      valueGetter: params => params.data?.address ?? params.data?.doctorDetails?.address ?? ''
     },
     {
       headerName: 'Actions',
       colId: 'actions',
-      cellRenderer: (params: any) => {
-        return `
-          <button class="btn-view">View</button>
-          <button class="btn-edit">Edit</button>
-          <button class="btn-delete">Delete</button>
-        `;
-      },
-      flex: 2,
-    },
+      cellRenderer: () => `
+        <button class="btn btn-sm btn-primary btn-view">View</button>
+        <button class="btn btn-sm btn-warning edit-btn ms-1">Edit</button>
+        <button class="btn btn-sm btn-danger delete-btn ms-1">Delete</button>
+      `,
+      flex: 2
+    }
   ];
 
   constructor(private staffService: StaffService, private router: Router) {}
@@ -56,36 +62,54 @@ export class StaffListComponent implements OnInit {
 
   loadStaff() {
     this.staffService.getAll().subscribe({
-      next: data => this.staffList = data,
+      next: data => this.rowData = data,
       error: err => console.error(err)
     });
   }
 
-  
-  onCellClicked(event: CellClickedEvent) {
-    if (event.colDef.colId !== 'actions') return;
-    if (!event.event) return;
+  onGridReady(ev: any): void {
+    ev.api.addEventListener('cellClicked', (e: any) => {
+      const target = e.event?.target as HTMLElement;
+      if (!target || !e.data) return;
 
-    const staffId = event.data.id;
-    const target = event.event.target as HTMLElement;
+      const staff = e.data as Staff;
 
-    if (target.classList.contains('btn-view')) this.viewStaff(staffId);
-    if (target.classList.contains('btn-edit')) this.editStaff(staffId);
-    if (target.classList.contains('btn-delete')) this.deleteStaff(staffId);
+      if (target.classList.contains('btn-view')) this.openView(staff);
+      else if (target.classList.contains('edit-btn')) this.openEdit(staff);
+      else if (target.classList.contains('delete-btn')) this.openDelete(staff);
+    });
   }
 
-  viewStaff(id: string) {
-    this.router.navigate(['/staff/view', id]);
+  // --- Modal Handlers ---
+  openView(staff: Staff): void {
+    this.selected = staff;
+    this.showView = true;
   }
 
-  editStaff(id: string) {
-    this.router.navigate(['/staff/edit', id]);
+  openEdit(staff: Staff): void {
+    this.selected = staff;
+    this.showForm = true;
   }
 
-  deleteStaff(id: string) {
-    if (confirm('Are you sure you want to delete this staff?')) {
-      this.staffService.delete(id).subscribe(() => this.loadStaff());
-    }
+  openDelete(staff: Staff): void {
+    this.selected = staff;
+    this.deleteId = staff.id;
+    this.showDeleteModal = true;
+  }
+
+  confirmDelete(): void {
+    if (!this.deleteId) return;
+
+    this.staffService.delete(this.deleteId).subscribe(() => {
+      this.rowData = this.rowData.filter(s => s.id !== this.deleteId);
+      this.showDeleteModal = false;
+      this.deleteId = null;
+    });
+  }
+
+  onSaved(): void {
+    this.showForm = false;
+    this.loadStaff();
   }
 
   addStaff() {

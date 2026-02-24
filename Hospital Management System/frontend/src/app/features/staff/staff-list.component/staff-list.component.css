@@ -1,7 +1,8 @@
-.staff-list-container {
-padding: 20px;
+.staff-list-container .btn-sm {
+  padding: 0.25rem 0.5rem !important;
+  font-size: 0.75rem !important;
+  line-height: 1.2 !important;
 }
-
 .btn-add {
     margin-bottom: 10px;
     background-color: #4caf50;
@@ -16,7 +17,7 @@ padding: 20px;
     background-color: #45a049;
 }
 
-button.btn-view {
+.btn-view {
     background-color: #2196f3;
     color: white;
     border: none;
@@ -26,7 +27,7 @@ button.btn-view {
     cursor: pointer;
 }
 
-button.btn-edit {
+.btn-edit {
     background-color: #ffc107;
     color: black;
     border: none;
@@ -36,7 +37,7 @@ button.btn-edit {
     cursor: pointer;
 }
 
-button.btn-delete {
+.btn-delete {
     background-color: #f44336;
     color: white;
     border: none;

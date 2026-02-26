@@ -56,6 +56,7 @@ export class PatientListComponent implements OnInit {
     return new Date(Date.now() - b.getTime()).getUTCFullYear() - 1970;
   }
 
+  gridApi: any;
   onGridReady(ev: any): void {
     ev.api.addEventListener('cellClicked', (e: any) => {
       const target = e.event?.target as HTMLElement;
@@ -71,9 +72,19 @@ export class PatientListComponent implements OnInit {
   openEdit(p: Patient): void { this.selected = p; this.showForm = true; }
   openView(p: Patient): void { this.selected = p; this.showView = true; }
   askDelete(id: string): void { this.deleteId = id; this.showConfirm = true; }
+
+
   confirmDelete(): void {
     if (!this.deleteId) return;
-    this.svc.delete(this.deleteId).subscribe({ next: () => { this.showConfirm = false; this.deleteId = null; this.load(); }});
+    this.svc.delete(this.deleteId).subscribe({ 
+      next: () => { 
+        this.rowData = this.rowData.filter(p => p.id !== this.deleteId);
+         if (this.gridApi) this.gridApi.setRowData(this.rowData);
+
+        this.showConfirm = false; 
+        this.deleteId = null; 
+        },
+        error: (err) => console.error('Delete failed', err)
+      });
   }
-  onSaved(): void { this.showForm = false; this.load(); }
 }

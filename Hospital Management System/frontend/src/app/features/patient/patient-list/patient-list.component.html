@@ -1,34 +1,90 @@
-<div class="patient-container">
-  <button class="btn btn-success mb-2" (click)="openAdd()">+Add Patient
-    
-  </button>
+<div class="container mt-3">
 
-  <ag-grid-angular 
+  <div class=" mb-2">
+    <h4>Patients</h4>
+    <button class="btn btn-primary btn" (click)="openAdd()">
+      Add Patient
+    </button>
+  </div>
+
+
+  <ag-grid-angular
+    class="ag-theme-alpine"
+    style="width: 100%; height: 450px;"
     [rowData]="rowData"
     [columnDefs]="columnDefs"
-    [pagination]="true"
-    rowSelection="single"
-    class="ag-theme-alpine"
-    style="width: 100%; height: 400px;"
     (gridReady)="onGridReady($event)">
   </ag-grid-angular>
 
-  <app-patient-form
-    *ngIf="showForm"
-    [patient]="selected"
-    (saved)="onSaved()">
-  </app-patient-form>
-
-  <app-patient-view
-    *ngIf="showView"
-    [patient]="selected!"
-    (closed)="showView = false">
-  </app-patient-view>
-
-  <!-- Inline delete confirmation (NO modal component) -->
-  <div *ngIf="deleteId" class="confirm-inline mt-2">
-    <p>Are you sure you want to delete this patient?</p>
-    <button class="btn btn-danger" (click)="confirmDelete()">Yes</button>
-    <button class="btn btn-secondary ms-2" (click)="deleteId = null">No</button>
+  <div class="modal fade show"
+       *ngIf="showForm"
+        style="display:block; background: rgba(0,0,0,0.4);">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            {{ selected ? 'Edit Patient' : 'Add Patient' }}
+          </h5>
+          <button type="button" class="btn-close"
+                  (click)="showForm = false">
+          </button>
+        </div>
+        <div class="modal-body">
+          <app-patient-form
+            [patient]="selected!"
+            (saved)="load(); showForm = false;">
+          </app-patient-form>
+        </div>
+      </div>
+    </div>
   </div>
+
+
+  <div class="modal fade show"
+       *ngIf="showView && selected"
+        style="display:block; background: rgba(0,0,0,0.4);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Patient Details</h5>
+          <button type="button"
+                  class="btn-close"
+                  (click)="showView = false">
+          </button>
+        </div>
+        <div class="modal-body">
+          <app-patient-view
+            [patient]="selected"
+            (closed)="showView = false">
+          </app-patient-view>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade show"
+       *ngIf="showConfirm"
+        style="display:block; background: rgba(0,0,0,0.4);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirm Delete</h5>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this patient?
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary btn-sm"
+                  (click)="showConfirm = false">
+            Cancel
+          </button>
+          <button class="btn btn-danger btn-sm"
+                  (click)="confirmDelete()">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

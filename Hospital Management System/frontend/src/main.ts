@@ -1,5 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
+import { provideToastr } from 'ngx-toastr';
 import { AppComponent } from './app/app.component';
+
 import { appConfig } from './app/app.config';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 

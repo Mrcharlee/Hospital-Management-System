@@ -6,6 +6,7 @@ import { Appointment } from '../../../core/models/appointment.model';
 import { AppointmentService } from '../../../core/services/appointment.service';
 import { AppointmentFormComponent } from '../appointment-form/appointment-form.component';
 import { AppointmentViewComponent } from '../appointment-view/appointment-view.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-appointment-list',
@@ -56,14 +57,21 @@ export class AppointmentListComponent implements OnInit {
     }
   ];
 
-  constructor(private svc: AppointmentService) {}
+  
+  constructor(private svc: AppointmentService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.load();
   }
 
   load(): void {
-    this.svc.getAll().subscribe(d => this.rowData = d);
+    this.svc.getAll().subscribe({
+      next: (d) => {
+        this.rowData = d;
+        this.toastr.success('Appointments loaded successfully'); 
+      },
+      error: () => this.toastr.error('Failed to load appointments')
+    });
   }
 
   onGridReady(ev: any): void {
@@ -76,8 +84,9 @@ export class AppointmentListComponent implements OnInit {
 
       if (target.classList.contains('view-btn')) this.openView(appt);
       else if (target.classList.contains('edit-btn')) this.openEdit(appt);
-      else if (target.classList.contains('delete-btn')) this.deleteId = id ?? null;
-
+      else if (target.classList.contains('delete-btn')) {
+        this.deleteId = id ?? null;
+      }
       else if (target.classList.contains('cancel-btn')) {
         if (!id) return;
 
@@ -88,9 +97,13 @@ export class AppointmentListComponent implements OnInit {
           return;
         }
 
-        this.svc.cancel(id).subscribe(() => {
-          appt.isCancelled = true;
-          this.rowData = [...this.rowData];
+        this.svc.cancel(id).subscribe({
+          next: () => {
+            appt.isCancelled = true;
+            this.rowData = [...this.rowData];
+            this.toastr.success('Appointment cancelled successfully'); 
+          },
+          error: () => this.toastr.error('Failed to cancel appointment')
         });
       }
     });
@@ -115,9 +128,13 @@ export class AppointmentListComponent implements OnInit {
     if (!this.deleteId) return;
     const id = this.deleteId;
 
-    this.svc.cancel(id).subscribe(() => {
-      this.rowData = this.rowData.filter(a => a.id !== id);
-      this.deleteId = null;
+    this.svc.cancel(id).subscribe({
+      next: () => {
+        this.rowData = this.rowData.filter(a => a.id !== id);
+        this.deleteId = null;
+        this.toastr.success('Appointment deleted successfully'); 
+      },
+      error: () => this.toastr.error('Failed to delete appointment')
     });
   }
 

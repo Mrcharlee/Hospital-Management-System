@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ColDef, CellClickedEvent } from 'ag-grid-community';
+import { ColDef } from 'ag-grid-community';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { Staff } from '../../../core/models/staff.model';
 import { StaffService } from '../../../core/services/staff.service';
+import { ToastrService } from 'ngx-toastr'; 
 
 @Component({
   selector: 'app-staff-list',
@@ -54,7 +55,11 @@ export class StaffListComponent implements OnInit {
     }
   ];
 
-  constructor(private staffService: StaffService, private router: Router) {}
+  constructor(
+    private staffService: StaffService,
+    private router: Router,
+    private toastr: ToastrService 
+  ) {}
 
   ngOnInit(): void {
     this.loadStaff();
@@ -62,8 +67,11 @@ export class StaffListComponent implements OnInit {
 
   loadStaff() {
     this.staffService.getAll().subscribe({
-      next: data => this.rowData = data,
-      error: err => console.error(err)
+      next: data => {
+        this.rowData = data;
+        this.toastr.success('Staff loaded successfully');
+      },
+      error: err => this.toastr.error('Failed to load staff') 
     });
   }
 
@@ -80,7 +88,7 @@ export class StaffListComponent implements OnInit {
     });
   }
 
-  // --- Modal Handlers ---
+  
   openView(staff: Staff): void {
     this.selected = staff;
     this.showView = true;
@@ -100,10 +108,14 @@ export class StaffListComponent implements OnInit {
   confirmDelete(): void {
     if (!this.deleteId) return;
 
-    this.staffService.delete(this.deleteId).subscribe(() => {
-      this.rowData = this.rowData.filter(s => s.id !== this.deleteId);
-      this.showDeleteModal = false;
-      this.deleteId = null;
+    this.staffService.delete(this.deleteId).subscribe({
+      next: () => {
+        this.rowData = this.rowData.filter(s => s.id !== this.deleteId);
+        this.toastr.success('Staff deleted successfully'); 
+        this.showDeleteModal = false;
+        this.deleteId = null;
+      },
+      error: () => this.toastr.error('Failed to delete staff') 
     });
   }
 

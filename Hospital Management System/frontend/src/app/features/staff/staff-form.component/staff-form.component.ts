@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Staff } from '../../../core/models/staff.model';
 import { StaffService } from '../../../core/services/staff.service';
+import { ToastrService } from 'ngx-toastr'; 
 
 @Component({
   standalone: true,
@@ -18,11 +18,13 @@ export class StaffFormComponent implements OnInit {
   staffId: string | null = null;
   isEditMode = false;
 
+  
   constructor(
     private fb: FormBuilder,
     private staffService: StaffService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -42,30 +44,43 @@ export class StaffFormComponent implements OnInit {
 
   loadStaff() {
     this.staffService.getById(this.staffId!).subscribe({
-      next: (data: Staff) => this.staffForm.patchValue(data),
-      error: err => console.error('Failed to load staff', err),
+      next: (data: Staff) => {
+        this.staffForm.patchValue(data);
+        this.toastr.success('Staff loaded successfully'); 
+      },
+      error: err => this.toastr.error('Failed to load staff') 
     });
   }
 
   submitForm() {
-    if (this.staffForm.invalid) return;
+    if (this.staffForm.invalid) {
+      this.toastr.warning('Please fill all required fields'); 
+      return;
+    }
 
     const payload = this.staffForm.value;
 
     if (this.isEditMode) {
       this.staffService.update(this.staffId!, payload).subscribe({
-        next: () => this.router.navigate(['/staff']),
-        error: err => console.error('Failed to update staff', err),
+        next: () => {
+          this.toastr.success('Staff updated successfully'); 
+          this.router.navigate(['/staff']);
+        },
+        error: err => this.toastr.error('Failed to update staff') 
       });
     } else {
       this.staffService.add(payload).subscribe({
-        next: () => this.router.navigate(['/staff']),
-        error: err => console.error('Failed to add staff', err),
+        next: () => {
+          this.toastr.success('Staff added successfully'); 
+          this.router.navigate(['/staff']);
+        },
+        error: err => this.toastr.error('Failed to add staff') 
       });
     }
   }
 
   cancel() {
+    this.toastr.info('Staff form cancelled'); 
     this.router.navigate(['/staff']);
   }
 }

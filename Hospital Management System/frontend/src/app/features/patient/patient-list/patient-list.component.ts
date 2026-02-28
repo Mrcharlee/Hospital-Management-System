@@ -6,13 +6,16 @@ import { Patient } from '../../../core/models/patient.model';
 import { PatientService } from '../../../core/services/patient.service';
 import { PatientFormComponent } from '../patient-form/patient-form.component';
 import { PatientViewComponent } from '../patient-view/patient-view.component';
-
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-patient-list',
   standalone: true,
-  imports: [CommonModule, AgGridModule, PatientFormComponent, PatientViewComponent, 
-
+  imports: [
+    CommonModule,
+    AgGridModule,
+    PatientFormComponent,
+    PatientViewComponent,
   ],
   templateUrl: './patient-list.component.html',
   styleUrls: ['./patient-list.component.css']
@@ -38,14 +41,23 @@ export class PatientListComponent implements OnInit {
   selected: Patient | null = null;
   deleteId: string | null = null;
 
-  constructor(private svc: PatientService) {}
+  gridApi: any;
+
+  constructor(private svc: PatientService, private toastr: ToastrService) {}
 
   ngOnInit(): void { this.load(); }
 
   load(): void {
     this.svc.getAll().subscribe({
-      next: (r) => this.rowData = r,
-      error: (err) => console.error('Failed to load patients', err)
+      next: (r) => {
+              console.log('API Response:', r);
+        this.rowData = r;
+        this.toastr.success('Patients loaded successfully');
+      },
+      error: (err) => {
+        console.error('API Error:', err);
+      this.toastr.error('Failed to load patients')
+      }
     });
   }
 
@@ -56,8 +68,9 @@ export class PatientListComponent implements OnInit {
     return new Date(Date.now() - b.getTime()).getUTCFullYear() - 1970;
   }
 
-  gridApi: any;
   onGridReady(ev: any): void {
+    this.gridApi = ev.api;
+
     ev.api.addEventListener('cellClicked', (e: any) => {
       const target = e.event?.target as HTMLElement;
       if (!target) return;
@@ -73,18 +86,26 @@ export class PatientListComponent implements OnInit {
   openView(p: Patient): void { this.selected = p; this.showView = true; }
   askDelete(id: string): void { this.deleteId = id; this.showConfirm = true; }
 
-
   confirmDelete(): void {
     if (!this.deleteId) return;
+
+    const id = this.deleteId;
+
     this.svc.delete(this.deleteId).subscribe({ 
       next: () => { 
+        const rowToRemove = this.rowData.find(p => p.id === id);
+        if (rowToRemove && this.gridApi) {
+          this.gridApi.applyTransaction({ remove: [rowToRemove] });
+        }
+
         this.rowData = this.rowData.filter(p => p.id !== this.deleteId);
-         if (this.gridApi) this.gridApi.setRowData(this.rowData);
 
         this.showConfirm = false; 
-        this.deleteId = null; 
-        },
-        error: (err) => console.error('Delete failed', err)
-      });
+        this.deleteId = null;
+
+        this.toastr.success('Patient deleted successfully');
+      },
+      error: (err) => this.toastr.error('Failed to delete patient')
+    });
   }
 }

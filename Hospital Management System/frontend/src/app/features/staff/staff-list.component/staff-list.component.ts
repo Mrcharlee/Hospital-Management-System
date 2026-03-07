@@ -1,33 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { ColDef } from 'ag-grid-community';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { Staff } from '../../../core/models/staff.model';
 import { StaffService } from '../../../core/services/staff.service';
-import { ToastrService } from 'ngx-toastr'; 
+import { ToastrService } from 'ngx-toastr';
+import { StaffFormComponent } from '../../../features/staff/staff-form.component/staff-form.component';
+import { StaffViewComponent } from '../../../features/staff/staff-view.component/staff-view.component';
 
 @Component({
   selector: 'app-staff-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    RouterModule,
-    AgGridModule
-  ],
+  imports: [CommonModule, AgGridModule, StaffFormComponent, StaffViewComponent],
   templateUrl: './staff-list.component.html',
   styleUrls: ['./staff-list.component.css']
 })
 export class StaffListComponent implements OnInit {
-
   rowData: Staff[] = [];
   selected?: Staff;
 
-  showView = false;
   showForm = false;
+  showView = false;
   showDeleteModal = false;
   deleteId: string | null = null;
 
@@ -55,23 +48,14 @@ export class StaffListComponent implements OnInit {
     }
   ];
 
-  constructor(
-    private staffService: StaffService,
-    private router: Router,
-    private toastr: ToastrService 
-  ) {}
+  constructor(private staffService: StaffService, private toastr: ToastrService) {}
 
-  ngOnInit(): void {
-    this.loadStaff();
-  }
+  ngOnInit(): void { this.loadStaff(); }
 
-  loadStaff() {
+  loadStaff(): void {
     this.staffService.getAll().subscribe({
-      next: data => {
-        this.rowData = data;
-        this.toastr.success('Staff loaded successfully');
-      },
-      error: err => this.toastr.error('Failed to load staff') 
+      next: data => { this.rowData = data; this.toastr.success('Staff loaded successfully'); },
+      error: () => this.toastr.error('Failed to load staff')
     });
   }
 
@@ -81,50 +65,32 @@ export class StaffListComponent implements OnInit {
       if (!target || !e.data) return;
 
       const staff = e.data as Staff;
-
       if (target.classList.contains('btn-view')) this.openView(staff);
       else if (target.classList.contains('edit-btn')) this.openEdit(staff);
       else if (target.classList.contains('delete-btn')) this.openDelete(staff);
     });
   }
 
-  
-  openView(staff: Staff): void {
-    this.selected = staff;
-    this.showView = true;
-  }
-
-  openEdit(staff: Staff): void {
-    this.selected = staff;
-    this.showForm = true;
-  }
-
-  openDelete(staff: Staff): void {
-    this.selected = staff;
-    this.deleteId = staff.id;
-    this.showDeleteModal = true;
-  }
+  openAdd(): void { this.selected = undefined; this.showForm = true; }
+  openEdit(staff: Staff): void { this.selected = staff; this.showForm = true; }
+  openView(staff: Staff): void { this.selected = staff; this.showView = true; }
+  openDelete(staff: Staff): void { this.selected = staff; this.deleteId = staff.id; this.showDeleteModal = true; }
 
   confirmDelete(): void {
     if (!this.deleteId) return;
-
     this.staffService.delete(this.deleteId).subscribe({
       next: () => {
         this.rowData = this.rowData.filter(s => s.id !== this.deleteId);
-        this.toastr.success('Staff deleted successfully'); 
+        this.toastr.success('Staff deleted successfully');
         this.showDeleteModal = false;
         this.deleteId = null;
       },
-      error: () => this.toastr.error('Failed to delete staff') 
+      error: () => this.toastr.error('Failed to delete staff')
     });
   }
 
   onSaved(): void {
     this.showForm = false;
     this.loadStaff();
-  }
-
-  addStaff() {
-    this.router.navigate(['/staff/add']);
   }
 }

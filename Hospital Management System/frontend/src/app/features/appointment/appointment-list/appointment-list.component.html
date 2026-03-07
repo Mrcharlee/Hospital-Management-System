@@ -1,9 +1,9 @@
 <div class="appointment-container">
 
-  <!-- New Appointment Button -->
+
   <button class="btn btn-primary btn-sm mb-2" (click)="openAdd()">New Appointment</button>
 
-  <!-- Table -->
+
   <ag-grid-angular
     class="ag-theme-alpine"
     style="width: 100%; height: 400px;"
@@ -14,7 +14,6 @@
     (gridReady)="onGridReady($event)">
   </ag-grid-angular>
 
-  <!-- Form Modal (New / Edit) -->
   <div class="modal fade show" tabindex="-1" [ngClass]="{'d-block': showForm}" style="background-color: rgba(0,0,0,0.4);" *ngIf="showForm">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -32,7 +31,7 @@
     </div>
   </div>
 
-  <!-- View Modal -->
+
   <div class="modal fade show" tabindex="-1" [ngClass]="{'d-block': showView}" style="background-color: rgba(0,0,0,0.4);" *ngIf="showView && selected">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -50,7 +49,7 @@
     </div>
   </div>
 
-  <!-- Inline Delete Confirmation -->
+
   <div *ngIf="deleteId" class="confirm-inline mt-2">
     <p>Do you want to Delete this appointment?</p>
     <button class="btn btn-danger btn-sm" (click)="confirmDelete()">Yes</button>

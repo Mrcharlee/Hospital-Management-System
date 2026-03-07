@@ -1,86 +1,57 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Staff } from '../../../core/models/staff.model';
 import { StaffService } from '../../../core/services/staff.service';
-import { ToastrService } from 'ngx-toastr'; 
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   selector: 'app-staff-form',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './staff-form.component.html',
   styleUrls: ['./staff-form.component.css'],
 })
 export class StaffFormComponent implements OnInit {
+  @Input() staff?: Staff;
+  @Output() saved = new EventEmitter<void>();
+
   staffForm!: FormGroup;
-  staffId: string | null = null;
   isEditMode = false;
 
-  
-  constructor(
-    private fb: FormBuilder,
-    private staffService: StaffService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private toastr: ToastrService
-  ) {}
+  constructor(private fb: FormBuilder, private staffService: StaffService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
-    this.staffId = this.route.snapshot.paramMap.get('id');
-    this.isEditMode = !!this.staffId;
+    this.isEditMode = !!this.staff;
 
     this.staffForm = this.fb.group({
-      fullName: ['', Validators.required],
-      phone: ['', Validators.required],
-      role: ['', Validators.required],
-      isAdmin: [false],
-      address: ['', Validators.required],
-    });
-
-    if (this.isEditMode) this.loadStaff();
-  }
-
-  loadStaff() {
-    this.staffService.getById(this.staffId!).subscribe({
-      next: (data: Staff) => {
-        this.staffForm.patchValue(data);
-        this.toastr.success('Staff loaded successfully'); 
-      },
-      error: err => this.toastr.error('Failed to load staff') 
+      fullName: [this.staff?.fullName || '', Validators.required],
+      phone: [this.staff?.phone || '', Validators.required],
+      role: [this.staff?.role || '', Validators.required],
+      isAdmin: [this.staff?.isAdmin || false],
+      address: [this.staff?.address || '', Validators.required],
     });
   }
 
   submitForm() {
     if (this.staffForm.invalid) {
-      this.toastr.warning('Please fill all required fields'); 
+      this.toastr.warning('Please fill all required fields');
       return;
     }
 
-    const payload = this.staffForm.value;
+    const formValue = this.staffForm.value;
+    const payload: Partial<Staff> = { ...formValue };
 
-    if (this.isEditMode) {
-      this.staffService.update(this.staffId!, payload).subscribe({
-        next: () => {
-          this.toastr.success('Staff updated successfully'); 
-          this.router.navigate(['/staff']);
-        },
-        error: err => this.toastr.error('Failed to update staff') 
+    if (this.isEditMode && this.staff?.id) {
+      this.staffService.update(this.staff.id, payload as Staff).subscribe({
+        next: () => { this.toastr.success('Staff updated successfully'); this.saved.emit(); },
+        error: () => this.toastr.error('Failed to update staff')
       });
     } else {
-      this.staffService.add(payload).subscribe({
-        next: () => {
-          this.toastr.success('Staff added successfully'); 
-          this.router.navigate(['/staff']);
-        },
-        error: err => this.toastr.error('Failed to add staff') 
+      this.staffService.add(payload as Staff).subscribe({
+        next: () => { this.toastr.success('Staff added successfully'); this.saved.emit(); },
+        error: () => this.toastr.error('Failed to add staff')
       });
     }
-  }
-
-  cancel() {
-    this.toastr.info('Staff form cancelled'); 
-    this.router.navigate(['/staff']);
   }
 }

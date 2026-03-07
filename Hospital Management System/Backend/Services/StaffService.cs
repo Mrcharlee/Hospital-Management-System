@@ -42,7 +42,9 @@ namespace Hospital_Management_System.Backend.Services
                 Id = Guid.NewGuid(),
                 FullName = dto.FullName,
                 Phone = dto.Phone,
-                IsAdmin = dto.IsAdmin
+                Role = dto.Role,
+                IsAdmin = dto.IsAdmin,
+                Address = dto.Address
             };
 
             _context.Staffs.Add(staff);

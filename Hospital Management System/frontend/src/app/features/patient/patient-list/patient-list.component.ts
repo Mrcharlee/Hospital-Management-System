@@ -50,12 +50,10 @@ export class PatientListComponent implements OnInit {
   load(): void {
     this.svc.getAll().subscribe({
       next: (r) => {
-              console.log('API Response:', r);
         this.rowData = r;
         this.toastr.success('Patients loaded successfully');
       },
       error: (err) => {
-        console.error('API Error:', err);
       this.toastr.error('Failed to load patients')
       }
     });
@@ -87,25 +85,29 @@ export class PatientListComponent implements OnInit {
   askDelete(id: string): void { this.deleteId = id; this.showConfirm = true; }
 
   confirmDelete(): void {
-    if (!this.deleteId) return;
+  if (!this.deleteId) return;
 
-    const id = this.deleteId;
+  const idToDelete = this.deleteId;
 
-    this.svc.delete(this.deleteId).subscribe({ 
-      next: () => { 
-        const rowToRemove = this.rowData.find(p => p.id === id);
-        if (rowToRemove && this.gridApi) {
-          this.gridApi.applyTransaction({ remove: [rowToRemove] });
-        }
+  this.svc.delete(idToDelete).subscribe({
+    next: () => {
+      this.rowData = this.rowData.filter(p => {
+        if (!p.id) return true;
+        return p.id.toLowerCase() !== idToDelete.toLowerCase();
+      });
 
-        this.rowData = this.rowData.filter(p => p.id !== this.deleteId);
+      if (this.gridApi) {
+        this.gridApi.setRowData(this.rowData);
+      }
 
-        this.showConfirm = false; 
-        this.deleteId = null;
+      this.showConfirm = false;
+      this.deleteId = null;
 
-        this.toastr.success('Patient deleted successfully');
-      },
-      error: (err) => this.toastr.error('Failed to delete patient')
-    });
-  }
+      this.toastr.success('Patient deleted successfully');
+    },
+    error: () => {
+      this.toastr.error('Failed to delete patient');
+    }
+  });
+}
 }

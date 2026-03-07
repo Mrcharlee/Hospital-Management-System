@@ -45,8 +45,7 @@ export const routes: Routes = [
       { path: 'staff/add', component: StaffFormComponent },
       { path: 'staff/:id/edit', component: StaffFormComponent },
       { path: 'staff/:id/view', component: StaffViewComponent },
-      { path: '', redirectTo: '/staff', pathMatch: 'full' },
-      { path: '**', redirectTo: '/staff' },
+      
     ],
   },
 ];

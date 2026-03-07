@@ -21,7 +21,7 @@ export class PatientFormComponent {
   constructor(
     private fb: FormBuilder,
     private svc: PatientService,
-    private toastr: ToastrService  // <-- Toastr injected
+    private toastr: ToastrService  
   ) {
     this.form = this.fb.group({
       fullName: ['', Validators.required],
@@ -39,14 +39,14 @@ export class PatientFormComponent {
 
   submit(): void {
     if (this.form.invalid) {
-      this.toastr.warning('Please fill all required fields'); // Optional warning
+      this.toastr.warning('Please fill all required fields'); 
       return;
     }
 
     const data: Patient = this.form.value;
 
     if (this.patient?.id) {
-      // Update patient
+      
       this.svc.update(this.patient.id, data).subscribe({
         next: () => {
           this.toastr.success('Patient updated successfully');
@@ -57,12 +57,12 @@ export class PatientFormComponent {
         }
       });
     } else {
-      // Add new patient
+      
       this.svc.add(data).subscribe({
         next: () => {
           this.toastr.success('Patient added successfully');
           this.saved.emit();
-          this.form.reset(); // optional, clears form after add
+          this.form.reset(); 
         },
         error: () => {
           this.toastr.error('Failed to add patient');

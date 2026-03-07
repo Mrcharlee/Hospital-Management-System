@@ -39,5 +39,14 @@ public class StaffController : ControllerBase
         var result = await _staffService.SetAdminAsync(id, isAdmin);
         return Ok(result);
     }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteStaff(Guid id)
+    {
+        var result = await _staffService.DeleteAsync(id);
 
+        if (!result)
+            return NotFound("Staff not found");
+
+        return NoContent();
+    }
 }

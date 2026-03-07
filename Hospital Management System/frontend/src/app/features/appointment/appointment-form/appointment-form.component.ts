@@ -29,6 +29,7 @@ export class AppointmentFormComponent implements OnInit {
       this.form.patchValue({
         patientId: this.appointment.patientId,
         appointmentDate: this.appointment.appointmentDate,
+          isCancelled: this.appointment.isCancelled
       });
     }
   }

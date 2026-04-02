@@ -1,5 +1,6 @@
 Added UI
-![Uploading image.png…]()
+<img width="1920" height="1008" alt="Screenshot 2026-02-25 022404" src="https://github.com/user-attachments/assets/2a5abd87-ef06-4c2e-96b8-14a69e4677d4" />
+
 
 Api Tested using Swagger And Postman
 
